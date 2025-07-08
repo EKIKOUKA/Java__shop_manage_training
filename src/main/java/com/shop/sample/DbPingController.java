@@ -18,12 +18,12 @@ public class DbPingController {
     public String pingDatabase() {
         try (Connection conn = dataSource.getConnection()) {
             if (conn.isValid(2)) {
-                return "✅ 資料庫連線成功";
+                return "✅ データーベース接続成功";
             } else {
-                return "❌ 資料庫連線失敗";
+                return "❌ データーベース接続失敗";
             }
         } catch (SQLException e) {
-            return "❌ 資料庫錯誤: " + e.getMessage();
+            return "❌ データーベース錯誤: " + e.getMessage();
         }
     }
 }
