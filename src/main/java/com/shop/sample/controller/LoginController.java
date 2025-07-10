@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -26,18 +27,42 @@ public class LoginController {
         String username = loginRequest.get("user_email");
         String password = loginRequest.get("password");
 
-        return userRepository.findByUserEmail(username)
-            .filter(user -> passwordEncoder.matches(password, user.getPassword()))
-            .map(user -> {
-                Map<String, Object> result = new java.util.HashMap<>();
-                result.put("token", jwtUtil.generateToken(user.getUserEmail(), user.getUserId()));
-                return result;
-            })
-            .orElseGet(() -> {
+        Map<String, Object>[] resultWrapper = new Map[1];
+        userRepository.findByUserEmail(username).ifPresentOrElse(user -> {
+            if (passwordEncoder.matches(password, user.getPassword())) {
+                Map<String, Object> userInfo = new HashMap<>();
+                userInfo.put("userId", user.getUserId());
+                userInfo.put("user_email", user.getUserEmail());
+                userInfo.put("username", user.getUsername());
+                userInfo.put("avatar",  user.getAvatar());
+                userInfo.put("totp_secret", user.getTotpSecret() != null && !user.getTotpSecret().isEmpty());
+
+                if (user.getTotpSecret() == null || user.getTotpSecret().isEmpty()) {
+                    userInfo.put("token", jwtUtil.generateToken(user.getUserEmail(), user.getUserId()));
+                }
+
+                Map<String, Object> result = new HashMap<>();
+                result.put("success", 1);
+                result.put("userInfo", userInfo);
+                result.put("message", "ログイン成功");
+
+                resultWrapper[0] = result;
+            } else {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                Map<String, Object> errorMap = new java.util.HashMap<>();
-                errorMap.put("error", "ユーザーネームやパスワードが間違いました");
-                return errorMap;
-            });
+                resultWrapper[0] = Map.of(
+                    "success", 0,
+                    "message", "ユーザーネームやパスワードが間違っています"
+                );
+            }
+        }, () -> {
+            // ユーザーが存在しない
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            resultWrapper[0] = Map.of(
+                "success", 0,
+                "message", "ユーザーネームやパスワードが間違っています"
+            );
+        });
+
+        return resultWrapper[0];
     }
 }
