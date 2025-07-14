@@ -1,24 +1,29 @@
 package com.shop.sample.security;
 
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.security.Key;
+import javax.crypto.SecretKey;
 import java.util.Date;
 
 @Component
 public class JwtUtil {
-    private Key secretKey;
-    private final long EXPIRATION_TIME = 1000 * 60 * 60 * 24; // 一日
+    @Value("${jwt.secret}")
+    private String secret;
+    private SecretKey secretKey;
 
     @PostConstruct
     public void init() {
-        this.secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+        byte[] keyBytes = Decoders.BASE64.decode(secret);
+        this.secretKey = Keys.hmacShaKeyFor(keyBytes);
     }
 
     public String generateToken(String username, Long userId) {
+        long EXPIRATION_TIME = 1000 * 60 * 60 * 24; // 一日
         return Jwts.builder()
                 .setSubject(username)
                 .claim("userId", userId)
