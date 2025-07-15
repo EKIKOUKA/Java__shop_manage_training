@@ -1,6 +1,5 @@
 package com.shop.sample.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -10,15 +9,13 @@ import lombok.Getter;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_id")
-    @JsonProperty("order_id")
     private Long orderId;
 
-    private String order_number;
-    private String order_price;
-    private String order_pay;
-    private String order_type;
-    private String order_content;
-    private String pay_status;
-    private String create_time;
+    private String orderNumber;
+    private String orderPrice;
+    private String orderPay;
+    private String orderType;
+    private String orderContent;
+    private String payStatus;
+    private String createTime;
 }
