@@ -67,8 +67,8 @@ public class GoodsController {
             goods.setUpdTime(System.currentTimeMillis() / 1000);
 
             goodsRepository.save(goods);
-            return Map.of("success", 1, "message", "更新成功");
-        }  catch (Exception e) {
+            return Map.of("success", 1, "message", "更新しました");
+        } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return Map.of("success", 0, "message", "商品更新に失敗しました");
         }
@@ -84,8 +84,8 @@ public class GoodsController {
             }
 
             goodsRepository.deleteById(goodsId);
-            return Map.of("success", 1, "message", "   ");
-        }  catch (Exception e) {
+            return Map.of("success", 1, "message", "削除しました");
+        } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return Map.of("success", 0, "message", "削除失敗しました");
         }
