@@ -19,21 +19,12 @@ public class OrderController {
 
     @PostMapping("/getOrdersList")
     public Map<String, Object> getOrdersList(HttpServletResponse response) {
-
         try {
             List<Order> ordersResult = orderRepository.findAll();
-
-            return Map.of(
-                "success", 1,
-                "data", ordersResult
-            );
+            return Map.of("success", 1, "data", ordersResult);
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-
-            return Map.of(
-                "success", 0,
-                "message", "注文一覧取得に失敗しました"
-            );
+            return Map.of("success", 0, "message", "注文一覧取得に失敗しました");
         }
     }
 }

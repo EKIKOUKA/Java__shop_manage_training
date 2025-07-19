@@ -1,17 +1,30 @@
 package com.shop.sample.controller;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import com.shop.sample.model.User;
+import com.shop.sample.repository.UserRepository;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@RequestMapping("/user")
-public class UserController {
+import java.util.List;
+import java.util.Map;
 
-    @GetMapping("/profile")
-    public String getUserProfile(Authentication authentication) {
-        String username = authentication.getName();
-        return username;
+@RestController
+public class UserController {
+    private final UserRepository userRepository;
+
+    public UserController(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    @PostMapping("/getUserList")
+    public Map<String, Object> getUserList(HttpServletResponse response) {
+        try {
+            List<User> userList = userRepository.findAll();
+            return Map.of("success", 1, "data", userList);
+        }  catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            return Map.of("success", 0, "message", "ユーザー一覧取得に失敗しました");
+        }
     }
 }
