@@ -65,8 +65,8 @@ public class GoodsController {
             goods.setGoodsNumber((Integer) request.get("goods_number"));
             goods.setGoodsPrice((Integer) request.get("goods_price"));
             goods.setUpdTime(System.currentTimeMillis() / 1000);
-
             goodsRepository.save(goods);
+
             return Map.of("success", 1, "message", "更新しました");
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

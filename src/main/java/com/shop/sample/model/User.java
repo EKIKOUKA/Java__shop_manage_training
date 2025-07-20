@@ -20,8 +20,8 @@ public class User {
     private String avatar;
     private String gender;
     private String totpSecret;
-    private byte userEdu;
-    private byte isActive;
+    private Integer userEdu;
+    private Integer isActive;
 
     @Setter(AccessLevel.NONE)
     private String password;
