@@ -26,7 +26,8 @@ public class SecurityConfig {
                     .anyRequest().authenticated()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .httpBasic(AbstractHttpConfigurer::disable); // ブラウザのポップアップを表示しないよう
+            .httpBasic(AbstractHttpConfigurer::disable) // ブラウザのポップアップを表示しないよう
+            .formLogin(AbstractHttpConfigurer::disable); // デフォルトのフォームログイン行為を禁止
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
